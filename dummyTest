@@ -1,0 +1,23 @@
+#!/usr/bin/env python
+
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
+# Test script to generate a sample result
+import os
+retval = 0
+log_message = "log***hello world!\nlog***goodbye!\n"
+try:
+    with file('log_info.txt', 'w') as f:
+        f.write(str(log_message))
+except OSError:
+    print "Error opening file log_info.txt"
+
+try:
+    with file('retval.txt', 'w') as f:
+        f.write(str(retval))
+except OSError:
+    print "Error opening file retval.txt"
+
+
