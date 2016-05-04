@@ -112,6 +112,7 @@ class Submission(object):
  
             # Bug 1175559 - Workaround for HTTP Error
             job.add_end_timestamp(0)
+            # Below line is optional. We can choose not to pass any logs.
             job.add_log_reference( 'buildbot_text', self.settings['treeherder']['log_reference'])
 
         return job
@@ -137,8 +138,7 @@ class Submission(object):
                              'Perhaps it has not been ingested by '
                              'Treeherder?'.format(self.revision))
 
-        print "lookup "+lookup_url
-        print json.dumps(response.json())
+        #print "Server response\n" + json.dumps(response.json())+"\n"
         return response.json()['results'][0]['revision_hash']
 
     def submit(self, job):
@@ -151,7 +151,8 @@ class Submission(object):
         job_collection = TreeherderJobCollection()
         job_collection.add(job)
 
-        print('Sending results to Treeherder: {}'.format(job_collection.to_json()))
+        print('Sent results to Treeherder: {}'.format(job_collection.to_json()))
+        print("\n")
         url = urlparse(self.url)
         client = TreeherderClient(protocol=url.scheme, host=url.hostname,
                                   client_id=self.client_id, secret=self.secret)
@@ -224,11 +225,11 @@ def parse_args():
     treeherder_group.add_argument('--treeherder-secret',
                                   default=os.environ.get('TREEHERDER_SECRET'),
                                   help='Secret for submission to Treeherder.')
-    print json.dumps(vars(parser.parse_args()))
+    #print json.dumps(vars(parser.parse_args()))
     return vars(parser.parse_args())
 
 if __name__ == '__main__':
-    print('Cloud QA Treeherder Submission Script Version')
+    print('Demo Treeherder Submission Script Version 1.0\n')
     kwargs = parse_args()
 
     # Activate the environment, and create if necessary
@@ -246,7 +247,7 @@ if __name__ == '__main__':
 
     settings = config['test_types'][kwargs['test_type']]
 
-    print "This is kwargs"+json.dumps(kwargs)
+    #print "\nArgs"+json.dumps(kwargs)+"\n"
     th = Submission(kwargs['repository'], kwargs['revision'][:12],
                     treeherder_url=kwargs['treeherder_url'],
                     treeherder_client_id=kwargs['treeherder_client_id'],
