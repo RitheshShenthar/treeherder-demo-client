@@ -190,7 +190,7 @@ def parse_args():
     parser = argparse.ArgumentParser()
     # IF USING JENKINS COMMENT BELOW LINES AND UNCOMMENT THE COMMENTED LINES
     parser.add_argument('--locale',
-                        default='en-US',
+                        default='DEMO',
                         help='The locale of the build. Default: %(default)s.')
     #parser.add_argument('--locale',
     #                    action=JenkinsDefaultValueAction,
@@ -271,5 +271,11 @@ if __name__ == '__main__':
             job_data = {}
 
         job = th.create_job(job_data, **kwargs)
-        retval = 1
+        retval = 0
+        try:
+            with file('retval.txt', 'r') as f:
+                retval = int(f.read())
+                print "\nRead retval and found retval=>"+retval
+        except:
+            print "Error: Could not find retval.txt" 
         th.submit_completed_job(job, retval)
